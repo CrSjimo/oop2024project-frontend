@@ -1,13 +1,13 @@
 import QtQml
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Controls.Universal
+import QtQuick.Controls.Basic
 
 Dialog {
     id: dialog
     width: 400
     height: 300
-    title: "忘记密码"
+    title: "注册"
     standardButtons: Dialog.Cancel | (valid ? Dialog.Ok : 0)
     property string email: emailInput.text
     property string password: passwordInput.text
@@ -16,7 +16,7 @@ Dialog {
     GridLayout {
         anchors.fill: parent
         columns: 3
-        Text {
+        Label {
             text: "邮箱"
         }
         TextField {
@@ -24,7 +24,25 @@ Dialog {
             Layout.columnSpan: 2
             Layout.fillWidth: true
         }
-        Text {
+        Label {
+            text: "密码"
+        }
+        TextField {
+            id: passwordInput
+            Layout.columnSpan: 2
+            Layout.fillWidth: true
+            echoMode: TextInput.Password
+        }
+        Label {
+            text: "确认密码"
+        }
+        TextField {
+            id: verifyPasswordInput
+            Layout.columnSpan: 2
+            Layout.fillWidth: true
+            echoMode: TextInput.Password
+        }
+        Label {
             text: "验证码"
         }
         TextField {
@@ -34,24 +52,6 @@ Dialog {
         Button {
             text: "发送验证码"
             enabled: dialog.email.length && dialog.password.length && verifyPasswordInput.text === dialog.password
-        }
-        Text {
-            text: "新密码"
-        }
-        TextField {
-            id: passwordInput
-            Layout.columnSpan: 2
-            Layout.fillWidth: true
-            echoMode: TextInput.Password
-        }
-        Text {
-            text: "确认密码"
-        }
-        TextField {
-            id: verifyPasswordInput
-            Layout.columnSpan: 2
-            Layout.fillWidth: true
-            echoMode: TextInput.Password
         }
     }
 }

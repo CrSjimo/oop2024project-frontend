@@ -1,9 +1,23 @@
 import QtQml
 import QtQuick
-import QtQuick.Controls.Universal
+import QtQuick.Controls.Basic
 import QtQuick.Layouts
 
+import dev.sjimo.oop2024projectfrontend
+
 Item {
+    LoginDialog {
+        id: loginDialog
+        anchors.centerIn: Overlay.overlay
+    }
+    RegisterDialog {
+        id: registerDialog
+        anchors.centerIn: Overlay.overlay
+    }
+    ForgotPasswordDialog {
+        id: forgotPasswordDialog
+        anchors.centerIn: Overlay.overlay
+    }
     ColumnLayout {
         anchors.fill: parent
         Item {
@@ -21,16 +35,16 @@ Item {
             ColumnLayout {
                 Text {
                     id: userNameText
-                    text: "User Name"
+                    text: UserModel.userName
                     font.pointSize: 36
                 }
                 Text {
                     id: userIdText
-                    text: "ID: 1"
+                    text: "ID: " + UserModel.userId
                 }
                 Text {
                     id: userEmailText
-                    text: "email@example.com"
+                    text: UserModel.email
                 }
                 RowLayout {
                     Button {
@@ -40,7 +54,7 @@ Item {
                         text: "修改密码"
                     }
                     Button {
-                        text: "修改用户信息"
+                        text: "修改资料"
                     }
                 }
             }
@@ -49,12 +63,15 @@ Item {
             Layout.alignment: Qt.AlignCenter
             Button {
                 text: "登录"
+                onClicked: loginDialog.open()
             }
             Button {
                 text: "注册"
+                onClicked: registerDialog.open()
             }
             Button {
                 text: "忘记密码"
+                onClicked: forgotPasswordDialog.open()
             }
         }
         Item {
