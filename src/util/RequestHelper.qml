@@ -11,11 +11,15 @@ QtObject {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
                         if (typeof xhr.response === 'string')
-                            resolve(JSON.parse(xhr.response));
+                            try {
+                                resolve(JSON.parse(xhr.response));
+                            } catch (e) {
+                                resolve(xhr.response)
+                            }
                         else
                             resolve(xhr.response)
                     } else {
-                        console.log(xhr.response)
+                        console.log(xhr.responseText)
                         if (typeof xhr.response === 'string')
                             reject(JSON.parse(xhr.response));
                         else

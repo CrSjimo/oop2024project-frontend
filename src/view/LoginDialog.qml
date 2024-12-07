@@ -57,6 +57,9 @@ Dialog {
                 return UserDataController.getUserData(response.id)
             }).then(response => {
                 UserModel.userName = response.username
+                UserModel.gravatarEmail = response.gravatarEmail
+                UserModel.description = response.description
+                UserModel.gender = response.gender
             })
         }).then(() => {
             resultDialog.title = "登录成功"
@@ -65,6 +68,8 @@ Dialog {
             resultDialog.title = "登录失败"
             resultDialog.message = `code = ${e.code}\nmessage = ${e.message}`
             resultDialog.standardButtons = Dialog.Ok
+        }).finally(() => {
+            emailInput.text = passwordInput.text = ""
         })
     }
 
