@@ -27,11 +27,12 @@ Window {
     StackLayout {
         anchors.top: tabBar.bottom
         width: parent.width
+        anchors.bottom: parent.bottom
         currentIndex: tabBar.currentIndex
         Item {
             id: chatPage
         }
-        Item {
+        ContactPage {
             id: contactPage
         }
         UserPage {

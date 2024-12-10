@@ -15,7 +15,6 @@ Dialog {
     property string password: passwordInput.text
     property string verificationToken: verificationTokenInput.text
     readonly property bool valid: email.length && password.length && verificationToken.length && verifyPasswordInput.text === password
-    property bool isVerificationTokenSent: false
     GridLayout {
         anchors.fill: parent
         columns: 3
@@ -26,7 +25,6 @@ Dialog {
             id: emailInput
             Layout.columnSpan: 2
             Layout.fillWidth: true
-            enabled: !dialog.isVerificationTokenSent
         }
         Label {
             text: "密码"
@@ -36,7 +34,6 @@ Dialog {
             Layout.columnSpan: 2
             Layout.fillWidth: true
             echoMode: TextInput.Password
-            enabled: !dialog.isVerificationTokenSent
         }
         Label {
             text: "确认密码"
@@ -46,7 +43,6 @@ Dialog {
             Layout.columnSpan: 2
             Layout.fillWidth: true
             echoMode: TextInput.Password
-            enabled: !dialog.isVerificationTokenSent
         }
         Label {
             text: "验证码"
@@ -63,9 +59,7 @@ Dialog {
                 resultDialog.message = "请稍候"
                 resultDialog.standardButtons = 0
                 resultDialog.open()
-                let promise = dialog.isVerificationTokenSent ? AuthController.resendVerificationEmail(dialog.email) : AuthController.register(dialog.email, dialog.password)
-                promise.then(() => {
-                    dialog.isVerificationTokenSent = true
+                AuthController.register(dialog.email, dialog.password).then(() => {
                     resultDialog.title = "验证码已发送"
                     resultDialog.message = ""
                     resultDialog.standardButtons = Dialog.Ok
@@ -98,14 +92,13 @@ Dialog {
         resultDialog.open()
         AuthController.verify(dialog.verificationToken).then(() => {
             resultDialog.title = "注册成功"
+            resultDialog.message = ""
             resultDialog.standardButtons = Dialog.Ok
             emailInput.text = passwordInput.text = verifyPasswordInput.text = verificationTokenInput.text = ""
         }).catch(e => {
             resultDialog.title = "注册失败"
             resultDialog.message = `code = ${e.code}\nmessage = ${e.message}`
             resultDialog.standardButtons = Dialog.Ok
-        }).finally(() => {
-            isVerificationTokenSent = false
         })
     }
 }

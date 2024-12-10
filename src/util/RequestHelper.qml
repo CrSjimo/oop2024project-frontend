@@ -21,7 +21,11 @@ QtObject {
                     } else {
                         console.log(xhr.responseText)
                         if (typeof xhr.response === 'string')
-                            reject(JSON.parse(xhr.response));
+                            try {
+                                reject(JSON.parse(xhr.response));
+                            } catch (e) {
+                                reject(xhr.response)
+                            }
                         else
                             reject(xhr.response)
                     }

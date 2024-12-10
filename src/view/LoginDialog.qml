@@ -44,10 +44,14 @@ Dialog {
         Label {
             text: resultDialog.message
         }
+        onAccepted: {
+            emailInput.text = passwordInput.text = ""
+        }
     }
 
     onAccepted: {
         resultDialog.title = "正在登录"
+        resultDialog.message = "请稍候"
         resultDialog.standardButtons = 0
         resultDialog.open()
         AuthController.login(email, password).then(response => {
@@ -56,6 +60,7 @@ Dialog {
                 UserModel.userId = response.id
                 return UserDataController.getUserData(response.id)
             }).then(response => {
+                UserModel.email = email
                 UserModel.userName = response.username
                 UserModel.gravatarEmail = response.gravatarEmail
                 UserModel.description = response.description
@@ -63,13 +68,12 @@ Dialog {
             })
         }).then(() => {
             resultDialog.title = "登录成功"
+            resultDialog.message = ""
             resultDialog.standardButtons = Dialog.Ok
         }).catch(e => {
             resultDialog.title = "登录失败"
             resultDialog.message = `code = ${e.code}\nmessage = ${e.message}`
             resultDialog.standardButtons = Dialog.Ok
-        }).finally(() => {
-            emailInput.text = passwordInput.text = ""
         })
     }
 

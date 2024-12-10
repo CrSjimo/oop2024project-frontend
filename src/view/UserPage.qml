@@ -18,6 +18,18 @@ Item {
         id: forgotPasswordDialog
         anchors.centerIn: Overlay.overlay
     }
+    ModifyEmailDialog {
+        id: modifyEmailDialog
+        anchors.centerIn: Overlay.overlay
+    }
+    ModifyPasswordDialog {
+        id: modifyPasswordDialog
+        anchors.centerIn: Overlay.overlay
+    }
+    ModifyUserDataDialog {
+        id: modifyUserDataDialog
+        anchors.centerIn: Overlay.overlay
+    }
     ColumnLayout {
         anchors.fill: parent
         Item {
@@ -26,11 +38,16 @@ Item {
         RowLayout {
             Layout.alignment: Qt.AlignCenter
             Rectangle {
-                id: avatarImage
+                id: avatarImageRectangle
                 width: 160
                 height: 160
                 radius: 8
-                color: "red"
+                color: "#7f7f7f"
+                clip: true
+                Image {
+                    anchors.fill: parent
+                    source: GravatarHelper.gravatarUrl(UserModel.realGravatarEmail)
+                }
             }
             ColumnLayout {
                 Text {
@@ -49,12 +66,18 @@ Item {
                 RowLayout {
                     Button {
                         text: "修改邮箱"
+                        enabled: UserModel.userId !== -1
+                        onClicked: modifyEmailDialog.open()
                     }
                     Button {
                         text: "修改密码"
+                        enabled: UserModel.userId !== -1
+                        onClicked: modifyPasswordDialog.open()
                     }
                     Button {
                         text: "修改资料"
+                        enabled: UserModel.userId !== -1
+                        onClicked: modifyUserDataDialog.open()
                     }
                 }
             }

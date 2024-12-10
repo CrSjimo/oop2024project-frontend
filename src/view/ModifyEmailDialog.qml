@@ -7,28 +7,19 @@ Dialog {
     id: dialog
     width: 400
     height: 200
-    title: "修改密码"
+    title: "修改邮箱"
     standardButtons: Dialog.Cancel | (valid ? Dialog.Ok : 0)
-    property string password: passwordInput.text
-    readonly property bool valid: password.length && verifyPasswordInput.text === password
+    property string email: emailInput.text
+    readonly property bool valid: email.length
     GridLayout {
         anchors.fill: parent
         columns: 2
         Label {
-            text: "新密码"
+            text: "新邮箱"
         }
         TextField {
-            id: passwordInput
+            id: emailInput
             Layout.fillWidth: true
-            echoMode: TextInput.Password
-        }
-        Label {
-            text: "确认密码"
-        }
-        TextField {
-            id: verifyPasswordInput
-            Layout.fillWidth: true
-            echoMode: TextInput.Password
         }
     }
     Dialog {
@@ -44,21 +35,18 @@ Dialog {
         }
     }
     onAccepted: {
-        resultDialog.title = "正在修改密码"
+        resultDialog.title = "正在修改邮箱"
         resultDialog.message = "请稍候"
         resultDialog.standardButtons = 0
         resultDialog.open()
-        AuthController.resetPassword(dialog.password).then(() => {
-            return AuthController.login(UserModel.email, password).then(response => {
-                UserModel.token = response.token
-            })
-        }).then(() => {
-            resultDialog.title = "密码修改成功"
+        AuthController.resetEmail(dialog.email).then(() => {
+            UserModel.email = dialog.email
+            resultDialog.title = "邮箱修改成功"
             resultDialog.message = ""
             resultDialog.standardButtons = Dialog.Ok
-            passwordInput.text = verifyPasswordInput.text = ""
+            emailInput.text = ""
         }).catch(e => {
-            resultDialog.title = "密码修改失败"
+            resultDialog.title = "邮箱修改失败"
             resultDialog.message = `code = ${e.code}\nmessage = ${e.message}`
             resultDialog.standardButtons = Dialog.Ok
         })

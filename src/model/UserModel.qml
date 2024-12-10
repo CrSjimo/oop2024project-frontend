@@ -7,6 +7,7 @@ QtObject {
     property string userName: ""
     property int userId: -1
     property string gravatarEmail: ""
+    readonly property string realGravatarEmail: gravatarEmail.length ? gravatarEmail : email
     property string description: ""
     enum Gender {
         Other,

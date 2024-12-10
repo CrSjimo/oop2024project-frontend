@@ -12,4 +12,10 @@ QtObject {
     function getUserData(id) {
         return RequestHelper.request('GET', `/api/user/userdata/${id}`)
     }
+
+    function updateUserData(username, gender, gravatarEmail, description) {
+        return RequestHelper.request('PUT', `/api/user/userdata/${UserModel.userId}`, {
+            Authorization: "Bearer " + UserModel.token
+        }, {username, gender, gravatarEmail, description})
+    }
 }

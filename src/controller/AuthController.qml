@@ -7,10 +7,6 @@ QtObject {
         return RequestHelper.request('POST', '/api/auth/register', {}, {email, password});
     }
 
-    function resendVerificationEmail(email) {
-        return RequestHelper.request('POST', '/api/auth/resendVerificationEmail', {}, {email});
-    }
-
     function verify(token) {
         return RequestHelper.request('POST', '/api/auth/verify', {}, {token});
     }
@@ -23,11 +19,20 @@ QtObject {
         return RequestHelper.request('POST', '/api/auth/forgotPassword', {}, {email});
     }
 
-    function resetPassword(token, newPassword) {
+    function resetPassword(newPassword) {
         return RequestHelper.request('POST', '/api/auth/resetPassword', {
             Authorization: "Bearer " + UserModel.token
-        }, {token, newPassword});
+        }, {newPassword});
     }
 
+    function resetPasswordForgot(token, newPassword) {
+        return RequestHelper.request('POST', '/api/auth/resetPassword', {}, {token, newPassword});
+    }
+
+    function resetEmail(newEmail) {
+        return RequestHelper.request('POST', '/api/auth/resetEmail', {
+            Authorization: "Bearer " + UserModel.token
+        }, {newEmail})
+    }
 
 }
