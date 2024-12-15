@@ -4,17 +4,9 @@ import QtQml.Models
 
 QtObject {
     property ListModel friendModel: ListModel {
-        ListElement {
-            userName: "test 1"
-            gravatarEmail: "a"
-        }
-        ListElement {
-            userName: "test 2"
-            gravatarEmail: "a"
-        }
-        ListElement {
-            userName: "test 3"
-            gravatarEmail: "a"
-        }
     }
+    property ListModel friendCandidateModel: ListModel {
+    }
+    readonly property var friendSet: new Set()
+    readonly property var friendCandidateSet: new Set()
 }

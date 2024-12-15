@@ -40,4 +40,11 @@ Window {
         }
     }
 
+    Component.onCompleted: {
+        GlobalPageHelper.setPage = (index) => {
+            tabBar.forceActiveFocus()
+            tabBar.currentIndex = index
+        }
+    }
+
 }

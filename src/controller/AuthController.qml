@@ -12,7 +12,20 @@ QtObject {
     }
 
     function login(email, password) {
-        return RequestHelper.request('POST', '/api/auth/login', {}, {email, password});
+        return RequestHelper.request('POST', '/api/auth/login', {}, {email, password}).then(response => {
+            UserModel.token = response.token
+            return UserDataController.whoami().then(response => {
+                UserModel.userId = response.id
+                ContactController.getFriendList()
+                return UserDataController.getUserData(response.id)
+            }).then(response => {
+                UserModel.email = email
+                UserModel.userName = response.username
+                UserModel.gravatarEmail = response.gravatarEmail
+                UserModel.description = response.description
+                UserModel.gender = response.gender
+            })
+        })
     }
 
     function forgotPassword(email) {

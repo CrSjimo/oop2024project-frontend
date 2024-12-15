@@ -18,4 +18,8 @@ QtObject {
             Authorization: "Bearer " + UserModel.token
         }, {username, gender, gravatarEmail, description})
     }
+
+    function findUser(searchString) {
+        return RequestHelper.request('GET', `/api/user/find?q=${encodeURIComponent(searchString)}`)
+    }
 }

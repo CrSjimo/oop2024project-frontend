@@ -52,12 +52,12 @@ Item {
             ColumnLayout {
                 Text {
                     id: userNameText
-                    text: UserModel.userName
+                    text: UserModel.loggedIn ? UserModel.userName : "未登录"
                     font.pointSize: 36
                 }
                 Text {
                     id: userIdText
-                    text: "ID: " + UserModel.userId
+                    text: UserModel.loggedIn ? "ID: " + UserModel.userId : ""
                 }
                 Text {
                     id: userEmailText
@@ -66,17 +66,17 @@ Item {
                 RowLayout {
                     Button {
                         text: "修改邮箱"
-                        enabled: UserModel.userId !== -1
+                        enabled: UserModel.loggedIn
                         onClicked: modifyEmailDialog.open()
                     }
                     Button {
                         text: "修改密码"
-                        enabled: UserModel.userId !== -1
+                        enabled: UserModel.loggedIn
                         onClicked: modifyPasswordDialog.open()
                     }
                     Button {
                         text: "修改资料"
-                        enabled: UserModel.userId !== -1
+                        enabled: UserModel.loggedIn
                         onClicked: modifyUserDataDialog.open()
                     }
                 }

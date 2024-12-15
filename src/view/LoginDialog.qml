@@ -33,47 +33,23 @@ Dialog {
         }
     }
 
-    Dialog {
-        id: resultDialog
-        width: 200
-        height: 150
-        anchors.centerIn: Overlay.overlay
-        modal: true
-        title: "正在登录"
-        property string message: ""
-        Label {
-            text: resultDialog.message
-        }
-        onAccepted: {
-            emailInput.text = passwordInput.text = ""
-        }
+    MessageDialog {
+        id: messageDialog
     }
 
     onAccepted: {
-        resultDialog.title = "正在登录"
-        resultDialog.message = "请稍候"
-        resultDialog.standardButtons = 0
-        resultDialog.open()
-        AuthController.login(email, password).then(response => {
-            UserModel.token = response.token
-            return UserDataController.whoami().then(response => {
-                UserModel.userId = response.id
-                return UserDataController.getUserData(response.id)
-            }).then(response => {
-                UserModel.email = email
-                UserModel.userName = response.username
-                UserModel.gravatarEmail = response.gravatarEmail
-                UserModel.description = response.description
-                UserModel.gender = response.gender
-            })
-        }).then(() => {
-            resultDialog.title = "登录成功"
-            resultDialog.message = ""
-            resultDialog.standardButtons = Dialog.Ok
+        messageDialog.title = "正在登录"
+        messageDialog.message = "请稍候"
+        messageDialog.standardButtons = 0
+        messageDialog.open()
+        AuthController.login(email, password).then(() => {
+            messageDialog.title = "登录成功"
+            messageDialog.message = ""
+            messageDialog.standardButtons = Dialog.Ok
         }).catch(e => {
-            resultDialog.title = "登录失败"
-            resultDialog.message = `code = ${e.code}\nmessage = ${e.message}`
-            resultDialog.standardButtons = Dialog.Ok
+            messageDialog.title = "登录失败"
+            messageDialog.message = `code = ${e.code}\nmessage = ${e.message}`
+            messageDialog.standardButtons = Dialog.Ok
         })
     }
 

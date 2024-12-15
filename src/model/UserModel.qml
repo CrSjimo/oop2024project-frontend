@@ -15,4 +15,6 @@ QtObject {
         Female
     }
     property int gender: 0
+
+    readonly property bool loggedIn: userId !== -1
 }

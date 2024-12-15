@@ -22,33 +22,26 @@ Dialog {
             Layout.fillWidth: true
         }
     }
-    Dialog {
-        id: resultDialog
-        width: 200
-        height: 150
-        anchors.centerIn: Overlay.overlay
-        modal: true
-        title: ""
-        property string message: ""
-        Label {
-            text: resultDialog.message
-        }
+
+    MessageDialog {
+        id: messageDialog
     }
+
     onAccepted: {
-        resultDialog.title = "正在修改邮箱"
-        resultDialog.message = "请稍候"
-        resultDialog.standardButtons = 0
-        resultDialog.open()
+        messageDialog.title = "正在修改邮箱"
+        messageDialog.message = "请稍候"
+        messageDialog.standardButtons = 0
+        messageDialog.open()
         AuthController.resetEmail(dialog.email).then(() => {
             UserModel.email = dialog.email
-            resultDialog.title = "邮箱修改成功"
-            resultDialog.message = ""
-            resultDialog.standardButtons = Dialog.Ok
+            messageDialog.title = "邮箱修改成功"
+            messageDialog.message = ""
+            messageDialog.standardButtons = Dialog.Ok
             emailInput.text = ""
         }).catch(e => {
-            resultDialog.title = "邮箱修改失败"
-            resultDialog.message = `code = ${e.code}\nmessage = ${e.message}`
-            resultDialog.standardButtons = Dialog.Ok
+            messageDialog.title = "邮箱修改失败"
+            messageDialog.message = `code = ${e.code}\nmessage = ${e.message}`
+            messageDialog.standardButtons = Dialog.Ok
         })
     }
 }

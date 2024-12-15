@@ -31,36 +31,29 @@ Dialog {
             echoMode: TextInput.Password
         }
     }
-    Dialog {
-        id: resultDialog
-        width: 200
-        height: 150
-        anchors.centerIn: Overlay.overlay
-        modal: true
-        title: ""
-        property string message: ""
-        Label {
-            text: resultDialog.message
-        }
+
+    MessageDialog {
+        id: messageDialog
     }
+
     onAccepted: {
-        resultDialog.title = "正在修改密码"
-        resultDialog.message = "请稍候"
-        resultDialog.standardButtons = 0
-        resultDialog.open()
+        messageDialog.title = "正在修改密码"
+        messageDialog.message = "请稍候"
+        messageDialog.standardButtons = 0
+        messageDialog.open()
         AuthController.resetPassword(dialog.password).then(() => {
             return AuthController.login(UserModel.email, password).then(response => {
                 UserModel.token = response.token
             })
         }).then(() => {
-            resultDialog.title = "密码修改成功"
-            resultDialog.message = ""
-            resultDialog.standardButtons = Dialog.Ok
+            messageDialog.title = "密码修改成功"
+            messageDialog.message = ""
+            messageDialog.standardButtons = Dialog.Ok
             passwordInput.text = verifyPasswordInput.text = ""
         }).catch(e => {
-            resultDialog.title = "密码修改失败"
-            resultDialog.message = `code = ${e.code}\nmessage = ${e.message}`
-            resultDialog.standardButtons = Dialog.Ok
+            messageDialog.title = "密码修改失败"
+            messageDialog.message = `code = ${e.code}\nmessage = ${e.message}`
+            messageDialog.standardButtons = Dialog.Ok
         })
     }
 }

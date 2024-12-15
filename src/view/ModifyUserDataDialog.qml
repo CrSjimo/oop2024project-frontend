@@ -52,36 +52,28 @@ Dialog {
             text: UserModel.description
         }
     }
-    Dialog {
-        id: resultDialog
-        width: 200
-        height: 150
-        anchors.centerIn: Overlay.overlay
-        modal: true
-        title: ""
-        property string message: ""
-        Label {
-            text: resultDialog.message
-        }
+
+    MessageDialog {
+        id: messageDialog
     }
 
     onAccepted: {
-        resultDialog.title = "正在修改用户信息"
-        resultDialog.message = "请稍候"
-        resultDialog.standardButtons = 0
-        resultDialog.open()
+        messageDialog.title = "正在修改用户信息"
+        messageDialog.message = "请稍候"
+        messageDialog.standardButtons = 0
+        messageDialog.open()
         UserDataController.updateUserData(dialog.userName, dialog.gender, dialog.gravatarEmail, dialog.description).then(() => {
             UserModel.userName = dialog.userName
             UserModel.gender = dialog.gender
             UserModel.gravatarEmail = dialog.gravatarEmail
             UserModel.description = dialog.description
-            resultDialog.title = "用户信息修改成功"
-            resultDialog.message = ""
-            resultDialog.standardButtons = Dialog.Ok
+            messageDialog.title = "用户信息修改成功"
+            messageDialog.message = ""
+            messageDialog.standardButtons = Dialog.Ok
         }).catch(e => {
-            resultDialog.title = "用户信息修改失败"
-            resultDialog.message = `code = ${e.code}\nmessage = ${e.message}`
-            resultDialog.standardButtons = Dialog.Ok
+            messageDialog.title = "用户信息修改失败"
+            messageDialog.message = `code = ${e.code}\nmessage = ${e.message}`
+            messageDialog.standardButtons = Dialog.Ok
         })
     }
     onRejected: {
