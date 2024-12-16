@@ -8,7 +8,7 @@ import dev.sjimo.oop2024projectfrontend
 Dialog {
     id: dialog
     width: 400
-    height: 400
+    height: 300
     title: "用户资料"
     anchors.centerIn: Overlay.overlay
 
@@ -140,9 +140,21 @@ Dialog {
                 }
             }
 
+            FriendApplicationDialog {
+                id: friendApplicationDialog
+                userId: dialog.userId
+            }
+
             Button {
                 visible: UserModel.loggedIn && !dialog.isSelf
                 text: dialog.isFriend ? "删除好友" : "加好友"
+                onClicked: {
+                    if (dialog.isFriend) {
+
+                    } else {
+                        friendApplicationDialog.open()
+                    }
+                }
             }
 
             Button {

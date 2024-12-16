@@ -4,6 +4,10 @@ import QtQuick.Controls.Basic
 import QtQuick.Layouts
 
 Item {
+    FriendCandidateListDialog {
+        id: friendCandidateListDialog
+        anchors.centerIn: Overlay.overlay
+    }
     FindUserDialog {
         id: findUserDialog
         anchors.centerIn: Overlay.overlay
@@ -16,7 +20,8 @@ Item {
         spacing: 8
         Button {
             text: "好友申请"
-            enabled: UserModel.loggedIn
+            // enabled: UserModel.loggedIn
+            onClicked: friendCandidateListDialog.open()
         }
         Button {
             text: "群邀请"

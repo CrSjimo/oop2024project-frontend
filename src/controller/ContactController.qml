@@ -47,4 +47,10 @@ QtObject {
 
     }
 
+    function sendFriendApplication(userId, message) {
+        return RequestHelper.request('POST', `/api/contact/${UserModel.userId}/friend_application/${userId}`, {
+            Authorization: "Bearer " + UserModel.token
+        }, {message})
+    }
+
 }
