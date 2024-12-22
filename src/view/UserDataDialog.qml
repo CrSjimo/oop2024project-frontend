@@ -52,6 +52,7 @@ Dialog {
                 dialog.isFriend = false
                 commentName = ""
             }
+            isBlocked = ContactModel.blockListSet.has(userId)
             layout.visible = true
             messageDialog.close()
         }).catch(e => {
@@ -84,6 +85,14 @@ Dialog {
             id: userNameText
             text: dialog.commentName.length ? dialog.commentName : dialog.userName
             font.pointSize: 24
+        }
+
+        Label {
+            text: "ID"
+        }
+
+        Label {
+            text: dialog.userId
         }
 
         Label {
@@ -150,7 +159,18 @@ Dialog {
                 text: dialog.isFriend ? "删除好友" : "加好友"
                 onClicked: {
                     if (dialog.isFriend) {
-
+                        messageDialog.title = "正在删除好友"
+                        messageDialog.message = "请稍候"
+                        messageDialog.standardButtons = 0
+                        messageDialog.open()
+                        ContactController.deleteFriend(dialog.userId).then(() => {
+                            messageDialog.close()
+                            dialog.isFriend = false
+                        }).catch(e => {
+                            messageDialog.title = "删除好友失败"
+                            messageDialog.message = `code = ${e.code}\nmessage = ${e.message}`
+                            messageDialog.standardButtons = Dialog.Ok
+                        })
                     } else {
                         friendApplicationDialog.open()
                     }
@@ -160,6 +180,32 @@ Dialog {
             Button {
                 visible: UserModel.loggedIn && !dialog.isSelf
                 text: dialog.isBlocked ? "移出黑名单" : "加入黑名单"
+                onClicked: {
+                    messageDialog.title = `正在${dialog.isBlocked ? "移出" : "加入"}黑名单`
+                    messageDialog.message = "请稍候"
+                    messageDialog.standardButtons = 0
+                    messageDialog.open()
+                    let p = (dialog.isBlocked ? ContactController.deleteFromBlockList(dialog.userId) : ContactController.addToBlockList(dialog.userId))
+                    p.then(() => {
+                        messageDialog.close()
+                        dialog.isBlocked = !dialog.isBlocked
+                        if (dialog.isBlocked) {
+                            dialog.isFriend = false
+                        }
+                    }).catch(e => {
+                        messageDialog.title = `${dialog.isBlocked ? "移出" : "加入"}黑名单失败`
+                        messageDialog.message = `code = ${e.code}\nmessage = ${e.message}`
+                        messageDialog.standardButtons = Dialog.Ok
+                    })
+                }
+            }
+
+            ModifyCommentNameDialog {
+                id: modifyCommentNameDialog
+                userId: dialog.userId
+                onCommentNameChanged: function(commentName) {
+                    dialog.commentName = commentName
+                }
             }
 
             Button {
@@ -170,6 +216,10 @@ Dialog {
             Button {
                 visible: dialog.isFriend
                 text: "修改备注名"
+                onClicked: {
+                    modifyCommentNameDialog.commentName = dialog.commentName
+                    modifyCommentNameDialog.open()
+                }
             }
         }
     }

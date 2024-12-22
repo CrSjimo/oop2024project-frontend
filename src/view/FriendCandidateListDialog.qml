@@ -4,20 +4,26 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls.Basic
 
+import dev.sjimo.oop2024projectfrontend
+
 Dialog {
     id: dialog
     width: 600
     height: 400
     title: "好友申请"
-    ListModel {
-        id: resultModel
-        ListElement {
-            userId: 1
-            userName: "test"
-            gravatarEmail: "a"
-            email: "a"
-            message: "aaa"
-        }
+
+    function load() {
+        messageDialog.title = "正在加载好友申请"
+        messageDialog.message = "请稍候"
+        messageDialog.standardButtons = 0
+        messageDialog.open()
+        ContactController.getFriendCandidates().then(() => {
+            messageDialog.close()
+        }).catch(e => {
+            messageDialog.title = "好友申请加载失败"
+            messageDialog.message = `code = ${e.code}\nmessage = ${e.message}`
+            messageDialog.standardButtons = Dialog.Ok
+        })
     }
 
     MessageDialog {
@@ -28,12 +34,11 @@ Dialog {
         id: view
         anchors.fill: parent
         clip: true
-        model: resultModel
-        delegate: Button {
+        model: ContactModel.friendCandidateModel
+        delegate: Item {
             width: ListView.view.width
             height: 40
-            contentItem: Item {}
-            background: RowLayout {
+            RowLayout {
                 anchors.fill: parent
                 spacing: 8
                 Rectangle {
@@ -61,15 +66,49 @@ Dialog {
                     }
                 }
                 Label {
+                    visible: status === ContactModel.Accepted
                     text: "已接受"
                 }
-            }
-            onClicked: {
-                if (!view.userDataDialog)
-                    return
-                view.userDataDialog.userId = userId
-                view.userDataDialog.open()
-                view.userDataDialog.load()
+                Label {
+                    visible: status === ContactModel.Rejected
+                    text: "已拒绝"
+                }
+                Button {
+                    visible: status === ContactModel.Pending
+                    text: "接受"
+                    onClicked: {
+                        messageDialog.title = "正在接受好友申请"
+                        messageDialog.message = "请稍候"
+                        messageDialog.standardButtons = 0
+                        messageDialog.open()
+                        ContactController.acceptFriendCandidate(id).then(() => {
+                            status = ContactModel.Accepted
+                            messageDialog.close()
+                        }).catch(e => {
+                            messageDialog.title = "接受好友申请失败"
+                            messageDialog.message = `code = ${e.code}\nmessage = ${e.message}`
+                            messageDialog.standardButtons = Dialog.Ok
+                        })
+                    }
+                }
+                Button {
+                    visible: status === ContactModel.Pending
+                    text: "拒绝"
+                    onClicked: {
+                        messageDialog.title = "正在拒绝好友申请"
+                        messageDialog.message = "请稍候"
+                        messageDialog.standardButtons = 0
+                        messageDialog.open()
+                        ContactController.acceptFriendCandidate(id).then(() => {
+                            status = ContactModel.Rejected
+                            messageDialog.close()
+                        }).catch(e => {
+                            messageDialog.title = "拒绝好友申请失败"
+                            messageDialog.message = `code = ${e.code}\nmessage = ${e.message}`
+                            messageDialog.standardButtons = Dialog.Ok
+                        })
+                    }
+                }
             }
         }
     }

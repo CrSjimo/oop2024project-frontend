@@ -37,20 +37,78 @@ QtObject {
                     createdDate: v.friendCandidateResponse.createdDate,
                     userName: v.userDataResponse.username,
                     gravatarEmail: v.userDataResponse.gravatarEmail,
+                    email: v.userDataResponse.email
                 })
                 ContactModel.friendCandidateSet.add(v.friendCandidateResponse.userId)
             }
         })
     }
 
-    function getBlockList() {
+    function acceptFriendCandidate(id) {
+        return RequestHelper.request('POST', `/api/contact/${UserModel.userId}/friend_candidate/${id}/accept`, {
+            Authorization: "Bearer " + UserModel.token
+        }).then(() => {
+            return getFriendList();
+        });
+    }
 
+    function rejectFriendCandidate(id) {
+        return RequestHelper.request('POST', `/api/contact/${UserModel.userId}/friend_candidate/${id}/reject`, {
+            Authorization: "Bearer " + UserModel.token
+        });
+    }
+
+    function getBlockList() {
+        return RequestHelper.request('GET', `/api/contact/${UserModel.userId}/blocklist`, {
+            Authorization: "Bearer " + UserModel.token
+        }).then(response => Promise.all(response.map(blockListResponse => UserDataController.getUserData(blockListResponse.userId).then(userDataResponse => ({blockListResponse, userDataResponse}))))).then(list => {
+            ContactModel.blockListModel.clear()
+            ContactModel.blockListSet.clear()
+            for (let v of list) {
+                ContactModel.blockListModel.append({
+                    userId: v.blockListResponse.userId,
+                    createdDate: v.blockListResponse.createdDate,
+                    userName: v.userDataResponse.username,
+                    gravatarEmail: v.userDataResponse.gravatarEmail,
+                    email: v.userDataResponse.email
+                })
+                ContactModel.blockListSet.add(v.blockListResponse.userId)
+            }
+        })
     }
 
     function sendFriendApplication(userId, message) {
         return RequestHelper.request('POST', `/api/contact/${UserModel.userId}/friend_application/${userId}`, {
             Authorization: "Bearer " + UserModel.token
         }, {message})
+    }
+
+    function deleteFriend(userId) {
+        return RequestHelper.request('DELETE', `/api/contact/${UserModel.userId}/friend/${userId}`, {
+            Authorization: "Bearer " + UserModel.token
+        }).then(() => {
+            return getFriendList()
+        })
+    }
+
+    function addToBlockList(userId) {
+        return RequestHelper.request('POST', `/api/contact/${UserModel.userId}/blocklist/${userId}`, {
+            Authorization: "Bearer " + UserModel.token
+        }).then(() => {
+            return Promise.all(getFriendList(), getBlockList())
+        })
+    }
+
+    function deleteFromBlockList(userId) {
+        return RequestHelper.request('DELETE', `/api/contact/${UserModel.userId}/blocklist/${userId}`, {
+            Authorization: "Bearer " + UserModel.token
+        }).then(() => {
+            return getBlockList()
+        })
+    }
+
+    function updateFriend(userId, commentName) {
+        // TODO
     }
 
 }
