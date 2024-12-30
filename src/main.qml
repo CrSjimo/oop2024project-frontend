@@ -34,6 +34,7 @@ Window {
         }
         ContactPage {
             id: contactPage
+            Layout.fillHeight: true
         }
         UserPage {
             id: userPage

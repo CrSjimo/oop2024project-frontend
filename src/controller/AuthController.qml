@@ -17,6 +17,7 @@ QtObject {
             return UserDataController.whoami().then(response => {
                 UserModel.userId = response.id
                 ContactController.getFriendList()
+                ChatController.getMyGroups()
                 return UserDataController.getUserData(response.id)
             }).then(response => {
                 UserModel.email = email

@@ -18,6 +18,10 @@ Item {
         id: findUserDialog
         anchors.centerIn: Overlay.overlay
     }
+    CreateGroupDialog {
+        id: createGroupDialog
+        anchors.centerIn: Overlay.overlay
+    }
     RowLayout {
         anchors.top: parent.top
         anchors.left: parent.left
@@ -52,22 +56,44 @@ Item {
             text: "搜索群"
         }
         Button {
-            text: "刷新好友列表"
+            text: "创建群"
+            onClicked: createGroupDialog.open()
+        }
+        Button {
+            text: "刷新好友/群列表"
             enabled: UserModel.loggedIn
-            onClicked: ContactController.getFriendList()
+            onClicked: {
+                ContactController.getFriendList()
+                ChatController.getMyGroups()
+            }
         }
     }
     UserDataDialog {
         id: userDataDialogObj
     }
-    UserListView {
+    Item {
         anchors.top: buttonGroup.bottom
         anchors.left: parent.left
+        anchors.right: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.margins: 8
+        UserListView {
+            anchors.fill: parent
+            model: ContactModel.friendModel
+            textDalegate: Text {}
+            userDataDialog: userDataDialogObj
+        }
+    }
+    Item {
+        anchors.top: buttonGroup.bottom
+        anchors.left: parent.horizontalCenter
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         anchors.margins: 8
-        model: ContactModel.friendModel
-        textDalegate: Text {}
-        userDataDialog: userDataDialogObj
+        GroupListView {
+            anchors.fill: parent
+            model: ChatModel.groupModel
+            textDalegate: Text {}
+        }
     }
 }
