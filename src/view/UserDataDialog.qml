@@ -8,7 +8,7 @@ import dev.sjimo.oop2024projectfrontend
 Dialog {
     id: dialog
     width: 400
-    height: 300
+    height: 360
     title: "用户资料"
     anchors.centerIn: Overlay.overlay
 

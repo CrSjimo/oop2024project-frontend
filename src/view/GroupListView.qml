@@ -7,6 +7,7 @@ ListView {
     id: view
     clip: true
     property Component textDalegate: Label {}
+    property Dialog groupDataDialog: null
     delegate: Button {
         width: ListView.view.width
         height: 40
@@ -44,6 +45,14 @@ ListView {
                     opacity: 0.75
                 }
             }
+        }
+        onClicked: {
+            if (!view.groupDataDialog)
+                return
+            view.groupDataDialog.groupId = id
+            view.groupDataDialog.groupName = name
+            view.groupDataDialog.open()
+            view.groupDataDialog.load()
         }
     }
 }

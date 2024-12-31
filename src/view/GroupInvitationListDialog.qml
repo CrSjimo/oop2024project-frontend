@@ -10,17 +10,17 @@ Dialog {
     id: dialog
     width: 600
     height: 400
-    title: "好友申请"
+    title: "群邀请"
 
     function load() {
-        messageDialog.title = "正在加载好友申请"
+        messageDialog.title = "正在加载群邀请"
         messageDialog.message = "请稍候"
         messageDialog.standardButtons = 0
         messageDialog.open()
-        ContactController.getFriendCandidates().then(() => {
+        ChatController.getGroupInvitations().then(() => {
             messageDialog.close()
         }).catch(e => {
-            messageDialog.title = "好友申请加载失败"
+            messageDialog.title = "群邀请加载失败"
             messageDialog.message = `code = ${e.code}\nmessage = ${e.message}`
             messageDialog.standardButtons = Dialog.Ok
         })
@@ -34,7 +34,7 @@ Dialog {
         id: view
         anchors.fill: parent
         clip: true
-        model: ContactModel.friendCandidateModel
+        model: ChatModel.groupInvitationModel
         delegate: Item {
             width: ListView.view.width
             height: 40
@@ -47,17 +47,18 @@ Dialog {
                     width: 32
                     radius: 4
                     clip: true
-                    color: "#7f7f7f"
-                    Image {
-                        id: avatarImage
-                        anchors.fill: parent
-                        source: GravatarHelper.gravatarUrl(email.length ? email : gravatarEmail)
+                    color: GravatarHelper.groupAvatarColor(name)
+                    Text {
+                        text: name[0].toUpperCase()
+                        color: "white"
+                        anchors.centerIn: parent
+                        font.pixelSize: 24
                     }
                 }
                 Column {
                     Layout.fillWidth: true
                     Label {
-                        text: userName
+                        text: name
                     }
                     Label {
                         text: message
@@ -65,44 +66,44 @@ Dialog {
                     }
                 }
                 Label {
-                    visible: status === ContactModel.Accepted
+                    visible: status === ChatModel.Accepted
                     text: "已接受"
                 }
                 Label {
-                    visible: status === ContactModel.Rejected
+                    visible: status === ChatModel.Rejected
                     text: "已拒绝"
                 }
                 Button {
-                    visible: status === ContactModel.Pending
+                    visible: status === ChatModel.Pending
                     text: "接受"
                     onClicked: {
-                        messageDialog.title = "正在接受好友申请"
+                        messageDialog.title = "正在接受群邀请"
                         messageDialog.message = "请稍候"
                         messageDialog.standardButtons = 0
                         messageDialog.open()
-                        ContactController.acceptFriendCandidate(id).then(() => {
-                            status = ContactModel.Accepted
+                        ChatController.acceptGroupInvitation(id).then(() => {
+                            status = ChatModel.Accepted
                             messageDialog.close()
                         }).catch(e => {
-                            messageDialog.title = "接受好友申请失败"
+                            messageDialog.title = "接受群邀请失败"
                             messageDialog.message = `code = ${e.code}\nmessage = ${e.message}`
                             messageDialog.standardButtons = Dialog.Ok
                         })
                     }
                 }
                 Button {
-                    visible: status === ContactModel.Pending
+                    visible: status === ChatModel.Pending
                     text: "拒绝"
                     onClicked: {
-                        messageDialog.title = "正在拒绝好友申请"
+                        messageDialog.title = "正在拒绝群邀请"
                         messageDialog.message = "请稍候"
                         messageDialog.standardButtons = 0
                         messageDialog.open()
-                        ContactController.rejectFriendCandidate(id).then(() => {
-                            status = ContactModel.Rejected
+                        ChatController.rejectFriendCandidate(id).then(() => {
+                            status = ChatModel.Rejected
                             messageDialog.close()
                         }).catch(e => {
-                            messageDialog.title = "拒绝好友申请失败"
+                            messageDialog.title = "拒绝群邀请失败"
                             messageDialog.message = `code = ${e.code}\nmessage = ${e.message}`
                             messageDialog.standardButtons = Dialog.Ok
                         })

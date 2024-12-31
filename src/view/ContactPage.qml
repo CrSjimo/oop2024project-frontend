@@ -10,6 +10,10 @@ Item {
         id: friendCandidateListDialog
         anchors.centerIn: Overlay.overlay
     }
+    GroupInvitationListDialog {
+        id: groupInvitationListDialog
+        anchors.centerIn: Overlay.overlay
+    }
     BlockListDialog {
         id: blockListDialog
         anchors.centerIn: Overlay.overlay
@@ -39,6 +43,10 @@ Item {
         Button {
             text: "群邀请"
             enabled: UserModel.loggedIn
+            onClicked: {
+                groupInvitationListDialog.open()
+                groupInvitationListDialog.load()
+            }
         }
         Button {
             text: "黑名单"
@@ -84,6 +92,9 @@ Item {
             userDataDialog: userDataDialogObj
         }
     }
+    GroupDataDialog {
+        id: groupDataDialogObj
+    }
     Item {
         anchors.top: buttonGroup.bottom
         anchors.left: parent.horizontalCenter
@@ -94,6 +105,7 @@ Item {
             anchors.fill: parent
             model: ChatModel.groupModel
             textDalegate: Text {}
+            groupDataDialog: groupDataDialogObj
         }
     }
 }
