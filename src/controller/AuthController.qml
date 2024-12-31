@@ -18,6 +18,7 @@ QtObject {
                 UserModel.userId = response.id
                 ContactController.getFriendList()
                 ChatController.getMyGroups()
+                ChatController.getChatList()
                 return UserDataController.getUserData(response.id)
             }).then(response => {
                 UserModel.email = email

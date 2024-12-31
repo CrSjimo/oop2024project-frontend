@@ -29,8 +29,10 @@ Window {
         width: parent.width
         anchors.bottom: parent.bottom
         currentIndex: tabBar.currentIndex
-        Item {
+        ChatPage {
             id: chatPage
+            Layout.fillHeight: true
+            Layout.fillWidth: true
         }
         ContactPage {
             id: contactPage

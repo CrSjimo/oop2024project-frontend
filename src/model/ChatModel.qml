@@ -8,6 +8,10 @@ QtObject {
         Administrator,
         RegularMember
     }
+    enum ChatType {
+        PrivateChat,
+        GroupChat
+    }
     enum GroupInvitationStatus {
         Pending,
         Accepted,
@@ -17,5 +21,7 @@ QtObject {
     }
     readonly property var groupSet: new Set()
     readonly property ListModel groupInvitationModel: ListModel {
+    }
+    readonly property ListModel chatModel: ListModel {
     }
 }

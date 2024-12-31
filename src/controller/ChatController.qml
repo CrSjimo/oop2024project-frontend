@@ -20,12 +20,15 @@ QtObject {
             ChatModel.groupModel.clear()
             ChatModel.groupSet.clear()
             for (let group of response) {
+                if (group.type !== ChatModel.GroupChat)
+                    continue
                 ChatModel.groupModel.append({
                     name: group.name,
                     id: group.id
                 })
                 ChatModel.groupSet.add(group.id)
             }
+
         })
     }
 
@@ -45,16 +48,7 @@ QtObject {
                     gravatarEmail: v.userDataResponse.gravatarEmail,
                     email: v.userDataResponse.email,
                 }
-                ret.originCommentName = ret.userName
-                if (ContactModel.friendSet.has(v.id)) {
-                    for (let i = 0; i < ContactModel.friendModel.count; i++) {
-                        let friendEntry = ContactModel.friendModel.get(i)
-                        if (friendEntry.userId === v.id) {
-                            ret.originCommentName = friendEntry.commentName
-                            break
-                        }
-                    }
-                }
+                ret.originCommentName = ContactModel.getCommentName(v.id) ?? v.userDataResponse.username
                 ret.commentName = ret.originCommentName + (v.memberType === ChatModel.GroupOwner ? "（群主）" : v.memberType === ChatModel.Administrator ? "（管理员）" : "（成员）")
                 return ret;
             })
@@ -131,5 +125,43 @@ QtObject {
         return RequestHelper.request('POST', `/api/chat/group/${groupId}/user/${userId}/owner`, {
             Authorization: "Bearer " + UserModel.token
         })
+    }
+
+    function getChatList() {
+        return RequestHelper.request('GET', `/api/chat/groups_of/${UserModel.userId}`, {
+            Authorization: "Bearer " + UserModel.token
+        }).then(response => Promise.all(response.map(chat => {
+            if (chat.type === ChatModel.PrivateChat) {
+                let friendId = chat.user1Id === UserModel.userId ? chat.user2Id : chat.user1Id
+                return UserDataController.getUserData(friendId).then(userDataResponse => ({
+                    id: chat.id,
+                    name: ContactModel.getCommentName(friendId) ?? userDataResponse.username,
+                    type: chat.type,
+                    friendId,
+                    email: userDataResponse.email,
+                    gravatarEmail: userDataResponse.gravaterEmail,
+                }))
+            } else {
+                return {
+                    id: chat.id,
+                    name: chat.name,
+                    type: chat.type,
+                    friendId: -1,
+                    email: "",
+                    gravatarEmail: ""
+                }
+            }
+        }))).then(list => Promise.all(list.map(v => {
+            return MessageController.getLatestMessage(v.id).then(message => {
+                v.latestMessage = message?.message ?? ""
+                v.latestMessageTime = new Date(message?.createdDate)
+                return v
+            })
+        }))).then(list => {
+            ChatModel.chatModel.clear()
+            for (let v of list) {
+                ChatModel.chatModel.append(v)
+            }
+        }).catch(e => console.log(e))
     }
 }

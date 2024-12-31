@@ -41,13 +41,7 @@ Dialog {
             description = response.description
             if (ContactModel.friendSet.has(userId)) {
                 dialog.isFriend = true
-                for (let i = 0; i < ContactModel.friendModel.count; i++) {
-                    let v = ContactModel.friendModel.get(i)
-                    if (v.userId === userId) {
-                        commentName = v.commentName
-                        break
-                    }
-                }
+                commentName = ContactModel.getCommentName(userId)
             } else {
                 dialog.isFriend = false
                 commentName = ""

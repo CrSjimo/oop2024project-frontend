@@ -17,4 +17,18 @@ QtObject {
     readonly property var friendSet: new Set()
     readonly property var friendCandidateSet: new Set()
     readonly property var blockListSet: new Set()
+
+    function getCommentName(friendId) {
+        let commentName = null
+        if (ContactModel.friendSet.has(friendId)) {
+            for (let i = 0; i < ContactModel.friendModel.count; i++) {
+                let v = ContactModel.friendModel.get(i)
+                if (v.userId === friendId) {
+                    commentName = v.commentName
+                    break
+                }
+            }
+        }
+        return commentName
+    }
 }
