@@ -205,6 +205,23 @@ Dialog {
             Button {
                 visible: dialog.isFriend
                 text: "聊天"
+                onClicked: {
+                    messageDialog.title = "正在获取聊天"
+                    messageDialog.message = "请稍候"
+                    messageDialog.standardButtons = 0
+                    messageDialog.open()
+                    ChatController.getPrivateChat(dialog.userId).then(chat => {
+                        PageHelper.tabBar.currentIndex = 0
+                        PageHelper.chatPanel.id = chat.id
+                        PageHelper.chatPanel.load()
+                        messageDialog.close()
+                        dialog.close()
+                    }).catch(e => {
+                        messageDialog.title = "获取聊天失败"
+                        messageDialog.message = `code = ${e.code}\nmessage = ${e.message}`
+                        messageDialog.standardButtons = Dialog.Ok
+                    })
+                }
             }
 
             Button {

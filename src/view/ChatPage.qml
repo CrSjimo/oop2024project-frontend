@@ -6,6 +6,9 @@ import QtQuick.Controls.Basic
 import dev.sjimo.oop2024projectfrontend
 
 Item {
+
+
+
     ListView {
         id: chatListView
         clip: true
@@ -37,15 +40,16 @@ Item {
                     }
                     Text {
                         visible: type === ChatModel.GroupChat
-                        text: name[0].toUpperCase()
+                        text: name.length ? name[0].toUpperCase() : ""
                         color: "white"
                         anchors.centerIn: parent
                         font.pixelSize: 24
                     }
                 }
-                Column {
+                ColumnLayout {
                     Layout.fillWidth: true
                     RowLayout {
+                        Layout.fillWidth: true
                         Text {
                             text: name
                             Layout.fillWidth: true
@@ -56,14 +60,27 @@ Item {
                         }
                     }
                     Text {
-                        text: latestMessage ?? ""
+                        Layout.fillWidth: true
+                        text: (latestMessage ?? "").replace(/\n/g, " ")
+                        elide: Text.ElideRight
                         opacity: 0.75
                     }
                 }
             }
             onClicked: {
-
+                chatPanel.id = id
+                chatPanel.load()
             }
         }
+    }
+    ChatPanel {
+        id: chatPanel
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.left: chatListView.right
+        anchors.leftMargin: 8
+        anchors.right: parent.right
+        anchors.rightMargin: 8
+        Component.onCompleted: PageHelper.chatPanel = chatPanel
     }
 }

@@ -7,8 +7,8 @@ import dev.sjimo.oop2024projectfrontend
 Window {
     visible: true
     title: "oop2024project-frontend"
-    width: 800
-    height: 600
+    width: 1280
+    height: 800
 
     TabBar {
         id: tabBar
@@ -43,11 +43,6 @@ Window {
         }
     }
 
-    Component.onCompleted: {
-        GlobalPageHelper.setPage = (index) => {
-            tabBar.forceActiveFocus()
-            tabBar.currentIndex = index
-        }
-    }
+    Component.onCompleted: PageHelper.tabBar = tabBar
 
 }

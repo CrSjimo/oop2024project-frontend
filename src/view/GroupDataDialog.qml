@@ -8,8 +8,8 @@ import dev.sjimo.oop2024projectfrontend
 
 Dialog {
     id: dialog
-    width: 600
-    height: 400
+    width: 640
+    height: 560
     title: "群资料：" + groupName
     anchors.centerIn: Overlay.overlay
 
@@ -50,6 +50,11 @@ Dialog {
         id: memberModel
     }
 
+    ChangeGroupNameDialog {
+        id: changeGroupNameDialog
+        groupId: dialog.groupId
+    }
+
     GroupInviteDialog {
         id: groupInviteDialog
         groupId: dialog.groupId
@@ -58,6 +63,16 @@ Dialog {
 
     UserDataDialog {
         id: userDataDialog
+    }
+
+    GroupApplicationDialog {
+        id: groupApplicationDialog
+        groupId: dialog.groupId
+    }
+
+    GroupCandidateListDialog {
+        id: groupCandidateListDialog
+        groupId: dialog.groupId
     }
 
     Dialog {
@@ -198,15 +213,25 @@ Dialog {
             Button {
                 text: "加群"
                 visible: memberType === -1
+                onClicked: groupApplicationDialog.open()
+            }
+            Button {
+                text: "修改群名称"
+                visible: memberType === ChatModel.GroupOwner
+                onClicked: changeGroupNameDialog.open()
             }
             Button {
                 text: "邀请成员"
-                visible: memberType <= ChatModel.Administrator
+                visible: memberType !== -1 && memberType <= ChatModel.Administrator
                 onClicked: groupInviteDialog.open()
             }
             Button {
                 text: "加群申请"
-                visible: memberType <= ChatModel.Administrator
+                visible: memberType !== -1 && memberType <= ChatModel.Administrator
+                onClicked: {
+                    groupCandidateListDialog.open()
+                    groupCandidateListDialog.load()
+                }
             }
             Button {
                 text: memberType === ChatModel.GroupOwner ? "解散群" : "退出群"
@@ -233,6 +258,17 @@ Dialog {
             id: memberView
             model: memberModel
             userDataDialog: memberOperationDialog
+        }
+        Button {
+            Layout.fillWidth: true
+            text: "聊天"
+            visible: memberType !== -1
+            onClicked: {
+                PageHelper.tabBar.currentIndex = 0
+                PageHelper.chatPanel.id = dialog.groupId
+                PageHelper.chatPanel.load()
+                dialog.close()
+            }
         }
     }
 

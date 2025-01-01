@@ -13,12 +13,13 @@ QtObject {
 
     function login(email, password) {
         return RequestHelper.request('POST', '/api/auth/login', {}, {email, password}).then(response => {
+            Poller.running = false
             UserModel.token = response.token
             return UserDataController.whoami().then(response => {
                 UserModel.userId = response.id
                 ContactController.getFriendList()
                 ChatController.getMyGroups()
-                ChatController.getChatList()
+                Poller.running = true
                 return UserDataController.getUserData(response.id)
             }).then(response => {
                 UserModel.email = email
@@ -42,12 +43,6 @@ QtObject {
 
     function resetPasswordForgot(token, newPassword) {
         return RequestHelper.request('POST', '/api/auth/resetPassword', {}, {token, newPassword});
-    }
-
-    function resetEmail(newEmail) {
-        return RequestHelper.request('POST', '/api/auth/resetEmail', {
-            Authorization: "Bearer " + UserModel.token
-        }, {newEmail})
     }
 
 }

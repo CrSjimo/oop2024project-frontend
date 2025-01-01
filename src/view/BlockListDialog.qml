@@ -10,6 +10,7 @@ Dialog {
     width: 600
     height: 400
     title: "黑名单"
+    anchors.centerIn: Overlay.overlay
 
     function load() {
         messageDialog.title = "正在加载黑名单"

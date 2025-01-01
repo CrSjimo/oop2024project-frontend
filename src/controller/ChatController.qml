@@ -128,7 +128,7 @@ QtObject {
     }
 
     function getChatList() {
-        return RequestHelper.request('GET', `/api/chat/groups_of/${UserModel.userId}`, {
+        return RequestHelper.request('GET', `/api/chat/chats_of/${UserModel.userId}`, {
             Authorization: "Bearer " + UserModel.token
         }).then(response => Promise.all(response.map(chat => {
             if (chat.type === ChatModel.PrivateChat) {
@@ -162,6 +162,57 @@ QtObject {
             for (let v of list) {
                 ChatModel.chatModel.append(v)
             }
-        }).catch(e => console.log(e))
+        })
     }
+
+    function getPrivateChat(userId) {
+        return RequestHelper.request('GET', `/api/chat/private_chat/${UserModel.userId}/${userId}`, {
+            Authorization: "Bearer " + UserModel.token
+        })
+    }
+
+    function findGroup(searchString) {
+        return RequestHelper.request('GET', `/api/chat/find?q=${encodeURIComponent(searchString)}`)
+    }
+
+    function sendGroupApplication(groupId, message) {
+        return RequestHelper.request('POST', `/api/chat/group/${groupId}/apply_for`, {
+            Authorization: "Bearer " + UserModel.token
+        }, {message})
+    }
+
+    function getGroupCandidates(groupId) {
+        return RequestHelper.request('GET', `/api/chat/group/${groupId}/candidate`, {
+            Authorization: "Bearer " + UserModel.token
+        }).then(response => Promise.all(response.map(candidateResponse => UserDataController.getUserData(candidateResponse.userId).then(userDataResponse => ({candidateResponse, userDataResponse}))))).then(list => list.map(v => ({
+            id: v.candidateResponse.id,
+            userId: v.candidateResponse.userId,
+            message: v.candidateResponse.message,
+            status: v.candidateResponse.status,
+            createdDate: v.candidateResponse.createdDate,
+            userName: v.userDataResponse.username,
+            commentName: ContactModel.getCommentName(v.candidateResponse.userId) ?? "",
+            gravatarEmail: v.userDataResponse.gravatarEmail,
+            email: v.userDataResponse.email
+        })))
+    }
+
+    function acceptGroupCandidate(id) {
+        return RequestHelper.request('POST', `/api/chat/group_candidate/${id}/accept`, {
+            Authorization: "Bearer " + UserModel.token
+        })
+    }
+
+    function rejectGroupCandidate(id) {
+        return RequestHelper.request('POST', `/api/chat/group_candidate/${id}/reject`, {
+            Authorization: "Bearer " + UserModel.token
+        })
+    }
+
+    function changeGroupName(groupId, name) {
+        return RequestHelper.request('POST', `/api/chat/group/${groupId}`, {
+            Authorization: "Bearer " + UserModel.token
+        }, {name})
+    }
+
 }
