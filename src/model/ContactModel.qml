@@ -25,6 +25,8 @@ QtObject {
                 let v = ContactModel.friendModel.get(i)
                 if (v.userId === friendId) {
                     commentName = v.commentName
+                    if (!commentName.length)
+                        commentName = null
                     break
                 }
             }

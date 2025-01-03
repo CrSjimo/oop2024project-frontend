@@ -18,10 +18,6 @@ Item {
         id: forgotPasswordDialog
         anchors.centerIn: Overlay.overlay
     }
-    ModifyEmailDialog {
-        id: modifyEmailDialog
-        anchors.centerIn: Overlay.overlay
-    }
     ModifyPasswordDialog {
         id: modifyPasswordDialog
         anchors.centerIn: Overlay.overlay
@@ -64,11 +60,6 @@ Item {
                     text: UserModel.email
                 }
                 RowLayout {
-                    Button {
-                        text: "修改邮箱"
-                        enabled: UserModel.loggedIn
-                        onClicked: modifyEmailDialog.open()
-                    }
                     Button {
                         text: "修改密码"
                         enabled: UserModel.loggedIn

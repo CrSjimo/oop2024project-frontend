@@ -22,6 +22,10 @@ Item {
         id: findUserDialog
         anchors.centerIn: Overlay.overlay
     }
+    FindGroupDialog {
+        id: findGroupDialog
+        anchors.centerIn: Overlay.overlay
+    }
     CreateGroupDialog {
         id: createGroupDialog
         anchors.centerIn: Overlay.overlay
@@ -62,6 +66,7 @@ Item {
         }
         Button {
             text: "搜索群"
+            onClicked: findGroupDialog.open()
         }
         Button {
             text: "创建群"

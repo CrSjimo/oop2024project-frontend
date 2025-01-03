@@ -144,6 +144,7 @@ ColumnLayout {
         messageDialog.standardButtons = 0
         messageDialog.open()
         MessageController.sendMessage(panel.id, messageInput.text).then(waitForRefresh).then(refreshImpl).then(() => {
+            messageInput.text = ""
             messageDialog.close()
         }).catch(e => {
             messageDialog.title = "发送失败"

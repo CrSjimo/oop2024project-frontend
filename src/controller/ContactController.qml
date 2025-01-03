@@ -95,7 +95,7 @@ QtObject {
         return RequestHelper.request('POST', `/api/contact/${UserModel.userId}/blocklist/${userId}`, {
             Authorization: "Bearer " + UserModel.token
         }).then(() => {
-            return Promise.all(getFriendList(), getBlockList())
+            return Promise.all([getFriendList(), getBlockList()])
         })
     }
 
@@ -108,7 +108,11 @@ QtObject {
     }
 
     function updateFriend(userId, commentName) {
-        // TODO
+        return RequestHelper.request('POST', `/api/contact/${UserModel.userId}/friend/${userId}`, {
+            Authorization: "Bearer " + UserModel.token
+        }, {commentName}).then(() => {
+            return getFriendList()
+        })
     }
 
 }
